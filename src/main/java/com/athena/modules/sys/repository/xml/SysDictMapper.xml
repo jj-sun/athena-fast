@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.athena.modules.sys.mapper.SysDictMapper">
+
+    <select id="queryTableDictTextByKeys" resultType="com.athena.common.vo.DictModel">
+        select ${text} as "text", ${code} as "value" from ${table} where ${code} IN (
+        <foreach item="key" collection="keys" separator=",">
+            #{key}
+        </foreach>
+        )
+    </select>
+    <select id="queryManyDictByKeys" resultType="com.athena.common.vo.DictModelMany">
+        SELECT
+            dict.dict_code AS dictCode,
+            item.item_text AS "text",
+            item.item_value AS "value"
+        FROM
+        sys_dict_item AS item
+        INNER JOIN sys_dict AS dict ON dict.id = item.dict_id
+        WHERE dict.dict_code IN (
+        <foreach item="dictCode" collection="dictCodeList" separator=",">
+            #{dictCode}
+        </foreach>
+        )
+        AND item.item_value IN (
+        <foreach item="key" collection="keys" separator=",">
+            #{key}
+        </foreach>
+        )
+    </select>
+</mapper>
