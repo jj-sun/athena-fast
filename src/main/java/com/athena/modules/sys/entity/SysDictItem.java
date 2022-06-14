@@ -1,6 +1,7 @@
 package com.athena.modules.sys.entity;
 
 import com.athena.common.base.po.BasePo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -17,6 +18,7 @@ import java.io.Serializable;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
+@JsonIgnoreProperties(value = { "hibernateLazyInitializer", "handler" })
 @Entity
 @Table(name = "sys_dict_item")
 public class SysDictItem extends BasePo implements Serializable {
