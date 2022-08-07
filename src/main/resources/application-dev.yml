@@ -15,7 +15,7 @@ spring:
       time-between-eviction-runs-millis: 60000
       min-evictable-idle-time-millis: 300000
       #Oracle需要打开注释
-      #validation-query: SELECT 1 FROM DUAL
+      validation-query: SELECT 'x'
       test-while-idle: true
       test-on-borrow: false
       test-on-return: false
@@ -24,14 +24,16 @@ spring:
         url-pattern: /druid/*
         #login-username: admin
         #login-password: admin
-      filter:
-        stat:
-          log-slow-sql: true
-          slow-sql-millis: 1000
-          merge-sql: false
-        wall:
-          config:
-            multi-statement-allow: true
+      filters: stat,wall,slf4j
+      connection-properties: druid.stat.mergeSql\=true;druid.stat.slowSqlMillis\=5000
+#      filter:
+#        stat:
+#          log-slow-sql: true
+#          slow-sql-millis: 1000
+#          merge-sql: false
+#        wall:
+#          config:
+#            multi-statement-allow: true
 logging:
   level:
     com.athena.modules.system.mapper: info

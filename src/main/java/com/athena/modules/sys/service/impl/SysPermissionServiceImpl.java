@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,7 +36,7 @@ public class SysPermissionServiceImpl implements SysPermissionService {
 	public List<SysPermission> permissionTree() {
 		List<SysPermission> sysPermissionEntities = permissionRepository.findAll();
 		if(!CollectionUtils.isEmpty(sysPermissionEntities)) {
-			List<SysPermission> roots = sysPermissionEntities.stream().filter(root -> root.getParentId().equals(Constant.TREE_ROOT)).collect(Collectors.toList());
+			List<SysPermission> roots = sysPermissionEntities.stream().filter(root -> root.getParentId().equals(Constant.TREE_ROOT)).sorted(Comparator.comparing(SysPermission::getOrderNum)).collect(Collectors.toList());
 			buildTree(roots, sysPermissionEntities);
 			return roots;
 		}
@@ -46,7 +47,7 @@ public class SysPermissionServiceImpl implements SysPermissionService {
 			return;
 		}
 		roots.forEach(root -> {
-			List<SysPermission> childrenList = all.stream().filter(tree -> tree.getParentId().equals(root.getId())).collect(Collectors.toList());
+			List<SysPermission> childrenList = all.stream().filter(tree -> tree.getParentId().equals(root.getId())).sorted(Comparator.comparing(SysPermission::getOrderNum)).collect(Collectors.toList());
 			if(!CollectionUtils.isEmpty(childrenList)) {
 				root.setChildren(childrenList);
 				buildTree(childrenList, all);

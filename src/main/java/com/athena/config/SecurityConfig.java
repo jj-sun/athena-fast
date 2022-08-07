@@ -61,8 +61,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     //生成token，然后存到redis
                     LoginUser loginUser = (LoginUser) authentication.getPrincipal();
                     String token = JwtUtils.generateToken(loginUser.getUsername(), loginUser.getPassword());
-                    //默认一个小时
-                    redisUtils.set(RedisConstant.PREFIX_USER_TOKEN + token, token, JwtUtils.EXPIRE*2 / 1000);
+                    //默认两个个小时
+                    redisUtils.set(RedisConstant.PREFIX_USER_TOKEN + token, token, JwtUtils.EXPIRE/1000);
                     Map<String, Object> result = Maps.newHashMap();
                     result.put("token", token);
                     result.put("userInfo", loginUser.getUser());

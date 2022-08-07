@@ -23,7 +23,7 @@ public class JwtUtils {
     /**
      * token过期时间为30分钟，以token在redis缓存的时间为准。
      */
-    public static final long EXPIRE = 30 * 60 * 1000;
+    public static final long EXPIRE = 2 * 60 * 60 * 1000;
 
     /**
      * 生成jwt token

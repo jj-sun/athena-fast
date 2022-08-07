@@ -4,6 +4,7 @@ import com.athena.common.base.tree.BaseTree;
 import com.athena.common.constant.Constant;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,7 +19,7 @@ public class TreeUtils {
         if(CollectionUtils.isEmpty(all)) {
             return null;
         }
-        List<BaseTree<T>> root = all.stream().filter(tree -> tree.getParentKey().equals(Constant.TREE_ROOT)).collect(Collectors.toList());
+        List<BaseTree<T>> root = all.stream().filter(tree -> tree.getParentKey().equals(Constant.TREE_ROOT)).sorted(Comparator.comparing((BaseTree<T> tree) -> tree.getOrderNum())).collect(Collectors.toList());
         if(!CollectionUtils.isEmpty(root)) {
             buildTree(root, all);
         }
@@ -37,7 +38,7 @@ public class TreeUtils {
             return;
         }
         roots.forEach(root -> {
-            List<BaseTree<T>> childrenList = all.stream().filter(tree -> tree.getParentKey().equals(root.getKey())).collect(Collectors.toList());
+            List<BaseTree<T>> childrenList = all.stream().filter(tree -> tree.getParentKey().equals(root.getKey())).sorted(Comparator.comparing((BaseTree<T> tree) -> tree.getOrderNum())).collect(Collectors.toList());
             if(!CollectionUtils.isEmpty(childrenList)) {
                 root.setChildren(childrenList);
                 findChildren(childrenList, all);

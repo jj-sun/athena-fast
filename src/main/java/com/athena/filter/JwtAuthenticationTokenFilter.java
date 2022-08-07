@@ -56,20 +56,20 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             String username = JwtUtils.getUsernameByToken(accessToken);
             if(StringUtils.isBlank(username)) {
                 //用户名为空，认证失败
-                log.warn("用户名为空，认证失败");
+                log.error("用户名为空，认证失败");
                 filterChain.doFilter(request, response);
                 return;
             }
             SysUser sysUser = sysUserService.queryByUserName(username);
             if(Objects.isNull(sysUser)) {
                 //用户信息为空，认证失败
-                log.warn("用户信息为空，认证失败");
+                log.error("用户信息为空，认证失败");
                 filterChain.doFilter(request, response);
                 return;
             }
             if(!jwtTokenRefresh(accessToken, username, sysUser.getPassword())) {
                 //token失效，认证失败
-                log.warn("token失效，认证失败");
+                log.error("token失效，认证失败");
                 filterChain.doFilter(request, response);
                 return;
             }
@@ -84,6 +84,8 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             loginUser.setAuthorityList(grantedAuthorities);
             Authentication authentication = new UsernamePasswordAuthenticationToken(loginUser,accessToken, loginUser.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
+        } else {
+            log.error("没有获取到token！");
         }
         filterChain.doFilter(request, response);
     }
@@ -107,7 +109,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             if (!JwtUtils.verify(cacheToken, username, password)) {
                 String newAuthorization = JwtUtils.generateToken(username, password);
                 // 设置超时时间
-                redisUtils.set(RedisConstant.PREFIX_USER_TOKEN + token, newAuthorization, JwtUtils.EXPIRE*2 / 1000);
+                redisUtils.set(RedisConstant.PREFIX_USER_TOKEN + token, newAuthorization, JwtUtils.EXPIRE/1000);
                 log.debug("——————————用户在线操作，更新token保证不掉线—————————jwtTokenRefresh——————— "+ token);
             }
             return true;

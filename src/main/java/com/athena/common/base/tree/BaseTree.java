@@ -27,6 +27,8 @@ public abstract class BaseTree<T> implements Serializable {
 
     private boolean disabled;
 
+    private Integer orderNum;
+
     private List<BaseTree<T>> children;
 
     /**

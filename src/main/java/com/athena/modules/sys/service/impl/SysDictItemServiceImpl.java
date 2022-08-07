@@ -15,6 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.criteria.Predicate;
+import javax.persistence.metamodel.Bindable;
+import javax.persistence.metamodel.SingularAttribute;
 import java.util.List;
 import java.util.Objects;
 
