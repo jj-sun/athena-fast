@@ -63,7 +63,7 @@ public class SysRoleController extends AbstractController {
 	@GetMapping("/info/{roleId}")
 	//@PreAuthorize("hasAuthority('sys:role:info')")
 	public Result<SysRole> info(@PathVariable("roleId") String roleId){
-		SysRole role = roleRepository.getById(roleId);
+		SysRole role = roleRepository.getReferenceById(roleId);
 		
 		return Result.ok(role);
 	}

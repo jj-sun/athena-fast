@@ -1,16 +1,19 @@
 package com.athena.modules.sys.service.impl;
 
+import com.athena.common.base.tree.BaseTree;
 import com.athena.common.constant.Constant;
 import com.athena.common.utils.TreeUtils;
 import com.athena.modules.sys.entity.SysDept;
 import com.athena.modules.sys.repository.SysDeptRepository;
 import com.athena.modules.sys.service.SysDeptService;
 import com.athena.modules.sys.vo.SysDeptTree;
+import com.athena.modules.sys.vo.SysMenuTree;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,7 +32,7 @@ public class SysDeptServiceImpl implements SysDeptService {
     public List<SysDept> deptTreeList() {
         List<SysDept> sysDeptList = deptRepository.findAll();
         if(!CollectionUtils.isEmpty(sysDeptList)) {
-            List<SysDept> roots = sysDeptList.stream().filter(root -> root.getParentId().equals(Constant.TREE_ROOT)).collect(Collectors.toList());
+            List<SysDept> roots = sysDeptList.stream().filter(root -> root.getParentId().equals(Constant.TREE_ROOT)).sorted(Comparator.comparing(SysDept::getSortOrder)).collect(Collectors.toList());
             buildTree(roots, sysDeptList);
             return roots;
         }
@@ -40,7 +43,7 @@ public class SysDeptServiceImpl implements SysDeptService {
             return;
         }
         roots.forEach(root -> {
-            List<SysDept> childrenList = all.stream().filter(tree -> tree.getParentId().equals(root.getId())).collect(Collectors.toList());
+            List<SysDept> childrenList = all.stream().filter(tree -> tree.getParentId().equals(root.getId())).sorted(Comparator.comparing(SysDept::getSortOrder)).collect(Collectors.toList());
             if(!CollectionUtils.isEmpty(childrenList)) {
                 root.setChildren(childrenList);
                 buildTree(childrenList, all);
@@ -54,7 +57,7 @@ public class SysDeptServiceImpl implements SysDeptService {
         List<SysDeptTree> menuTreeList = Lists.newArrayList();
         if(!CollectionUtils.isEmpty(sysDeptList)) {
             sysDeptList.forEach(sysDept -> menuTreeList.add(new SysDeptTree(sysDept)));
-            List<SysDeptTree> root = menuTreeList.stream().filter(sysMenuTree -> sysMenuTree.getParentKey().equals(Constant.TREE_ROOT)).collect(Collectors.toList());
+            List<SysDeptTree> root = menuTreeList.stream().filter(sysMenuTree -> sysMenuTree.getParentKey().equals(Constant.TREE_ROOT)).sorted(Comparator.comparing(BaseTree::getOrderNum)).collect(Collectors.toList());
             if(!CollectionUtils.isEmpty(root)) {
                 TreeUtils.buildTree(root, menuTreeList);
                 return root;

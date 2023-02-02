@@ -3,12 +3,17 @@ package com.athena.modules.sys.service.impl;
 import com.athena.common.base.dto.PageDto;
 import com.athena.common.utils.PageUtils;
 import com.athena.common.utils.Query;
+import com.athena.modules.sys.entity.QSysUser;
 import com.athena.modules.sys.entity.SysUser;
 import com.athena.modules.sys.repository.SysUserRepository;
 import com.athena.modules.sys.repository.SysUserRoleRepository;
 import com.athena.modules.sys.service.SysUserRoleService;
 import com.athena.modules.sys.service.SysUserService;
 import com.google.common.collect.Lists;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.QueryResults;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -38,21 +43,25 @@ public class SysUserServiceImpl implements SysUserService {
 	@Autowired
 	private SysUserRoleRepository userRoleRepository;
 
+	@Autowired
+	private JPAQueryFactory queryFactory;
+
 	@Override
 	public PageUtils queryPage(SysUser user, PageDto pageDto) {
 
 		Pageable pageable = Query.getPage(pageDto);
 
-		Page<SysUser> page = sysUserRepository.findAll((root, query,builder) -> {
-			List<Predicate> predicateList = Lists.newArrayList();
-			if(StringUtils.isNotBlank(user.getUsername())) {
-				predicateList.add(builder.like(root.get("username"), "%" + user.getUsername() + "%"));
-			}
-			if(StringUtils.isNotBlank(user.getRealname())) {
-				predicateList.add(builder.like(root.get("realname"), "%" + user.getRealname() + "%"));
-			}
-			return builder.and(predicateList.toArray(new Predicate[0]));
-		}, pageable);
+		QSysUser quser = QSysUser.sysUser;
+		BooleanBuilder builder  =new BooleanBuilder();
+
+		if(StringUtils.isNotBlank(user.getUsername())) {
+			builder.and(quser.username.like("%" + user.getUsername() + "%"));
+		}
+		if(StringUtils.isNotBlank(user.getRealname())) {
+			builder.and(quser.realname.like("%" + user.getRealname() + "%"));
+		}
+		QueryResults<SysUser> page = queryFactory.select(quser).from(quser)
+				.offset(pageable.getOffset()).limit(pageable.getPageSize()).fetchResults();
 		return new PageUtils(page);
 	}
 

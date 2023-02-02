@@ -3,11 +3,16 @@ package com.athena.modules.sys.service.impl;
 import com.athena.common.base.dto.PageDto;
 import com.athena.common.utils.PageUtils;
 import com.athena.common.utils.Query;
+import com.athena.modules.sys.entity.QSysDictItem;
+import com.athena.modules.sys.entity.QSysUser;
 import com.athena.modules.sys.entity.SysDictItem;
 import com.athena.modules.sys.repository.SysDictItemRepository;
 import com.athena.modules.sys.service.SysDictItemService;
 import com.google.common.collect.Lists;
-import org.apache.commons.lang.StringUtils;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.QueryResults;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,30 +36,25 @@ public class SysDictItemServiceImpl implements SysDictItemService {
     @Autowired
     private SysDictItemRepository dictItemRepository;
 
+    @Autowired
+    private JPAQueryFactory jpaQueryFactory;
+
     @Override
     public PageUtils queryPage(SysDictItem dictItem, PageDto pageDto) {
-        /*IPage<SysDictItem> page = this.page(
-                new Query<SysDictItem>().getPage(pageDto),
-                new LambdaQueryWrapper<SysDictItem>()
-                        .eq(StringUtils.isNotBlank(dictItem.getDictId()), SysDictItem::getDictId, dictItem.getDictId())
-                        .like(StringUtils.isNotBlank(dictItem.getItemText()), SysDictItem::getItemText, dictItem.getItemText())
-                        .eq(Objects.nonNull(dictItem.getDelFlag()), SysDictItem::getDelFlag, dictItem.getDelFlag())
-        );*/
-
         Pageable pageable = Query.getPage(pageDto);
-        Page<SysDictItem> page = dictItemRepository.findAll((root, query, builder) -> {
-            List<Predicate> predicateList = Lists.newArrayList();
-            if(StringUtils.isNotBlank(dictItem.getDictId())) {
-                predicateList.add(builder.equal(root.get("dictId"), dictItem.getDictId()));
-            }
-            if(StringUtils.isNotBlank(dictItem.getItemText())) {
-                predicateList.add(builder.like(root.get("itemText"), dictItem.getItemText()));
-            }
-            if(Objects.nonNull(dictItem.getDelFlag())) {
-                predicateList.add(builder.equal(root.get("delFlag"), dictItem.getDelFlag()));
-            }
-            return builder.and(predicateList.toArray(predicateList.toArray(new Predicate[0])));
-        }, pageable);
+
+        QSysDictItem qSysDictItem = QSysDictItem.sysDictItem;
+        BooleanBuilder builder = new BooleanBuilder();
+        if(StringUtils.isNotBlank(dictItem.getDictId())) {
+            builder.and(qSysDictItem.dictId.eq(dictItem.getDictId()));
+        }
+        if(StringUtils.isNotBlank(dictItem.getItemText())) {
+            builder.and(qSysDictItem.itemText.like("%" + dictItem.getItemText() + "%"));
+        }
+        if(Objects.nonNull(dictItem.getDelFlag())) {
+            builder.and(qSysDictItem.delFlag.eq(dictItem.getDelFlag()));
+        }
+        QueryResults<SysDictItem> page = jpaQueryFactory.selectFrom(qSysDictItem).where(builder).offset(pageable.getOffset()).limit(pageable.getPageSize()).fetchResults();
 
         return new PageUtils(page);
     }

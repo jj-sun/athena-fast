@@ -75,7 +75,7 @@ public class SysPermissionController extends AbstractController {
 	@GetMapping("/info/{id}")
 	//@PreAuthorize("hasAuthority('sys:menu:info')")
 	public Result<SysPermission> info(@PathVariable("id") String id){
-		SysPermission menu = permissionRepository.getById(id);
+		SysPermission menu = permissionRepository.getReferenceById(id);
 		return Result.ok(menu);
 	}
 	

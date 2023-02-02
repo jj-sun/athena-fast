@@ -35,9 +35,6 @@ public class SysRoleServiceImpl implements SysRoleService {
 	@Override
 	public PageUtils queryPage(SysRole role, PageDto pageDto) {
 
-		/*IPage<SysRole> page = this.page(
-			new Query<SysRole>().getPage(pageDto)
-		);*/
 		Pageable pageable = Query.getPage(pageDto);
 		Page<SysRole> page = roleRepository.findAll(pageable);
 

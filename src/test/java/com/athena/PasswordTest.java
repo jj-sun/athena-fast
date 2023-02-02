@@ -1,9 +1,8 @@
 package com.athena;
 
+import com.athena.common.utils.SpringContextUtils;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.client.RestTemplate;
-
-import java.net.http.HttpClient;
 
 /**
  * @author Mr.sun
@@ -18,6 +17,7 @@ public class PasswordTest {
         System.err.println(passworddd);*/
         boolean res = passwordEncoder.matches("admin", "$2a$10$1TpP8nm7.Jz7RxNl7W99t.JaAtsnX9PfCTPL.TTYaRrDmwV6/LTNW");
         System.err.println(res);
+
     }
 
 }

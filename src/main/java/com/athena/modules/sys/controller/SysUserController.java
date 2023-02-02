@@ -83,7 +83,7 @@ public class SysUserController extends AbstractController {
 	@GetMapping("/info/{id}")
 	//@PreAuthorize("hasAuthority('sys:user:info')")
 	public Result<SysUser> info(@PathVariable("id") String id){
-		SysUser user = sysUserRepository.getById(id);
+		SysUser user = sysUserRepository.getReferenceById(id);
 		
 		//获取用户所属的角色列表
 		List<String> roleIdList = sysUserRoleService.queryRoleIdList(id);

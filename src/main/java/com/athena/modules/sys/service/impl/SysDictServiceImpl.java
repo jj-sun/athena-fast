@@ -5,11 +5,15 @@ import com.athena.common.utils.PageUtils;
 import com.athena.common.utils.Query;
 import com.athena.common.vo.DictModel;
 import com.athena.common.vo.DictModelMany;
+import com.athena.modules.sys.entity.QSysDict;
 import com.athena.modules.sys.entity.SysDict;
 import com.athena.modules.sys.repository.SysDictItemRepository;
 import com.athena.modules.sys.repository.SysDictRepository;
 import com.athena.modules.sys.service.SysDictService;
 import com.google.common.collect.Lists;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.QueryResults;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.transform.Transformers;
@@ -44,20 +48,26 @@ public class SysDictServiceImpl implements SysDictService {
     @Resource
     private EntityManager entityManager;
 
+    @Autowired
+    private JPAQueryFactory jpaQueryFactory;
+
     @Override
     public PageUtils queryPage(SysDict dict, PageDto pageDto) {
 
         Pageable pageable = Query.getPage(pageDto);
-        Page<SysDict> page = dictRepository.findAll((root,query, builder) -> {
-            List<Predicate> predicateList = Lists.newArrayList();
-            if(StringUtils.isNotBlank(dict.getDictName())) {
-                predicateList.add(builder.like(root.get("dictName"), "%" + dict.getDictName() + "%"));
-            }
-            if(StringUtils.isNotBlank(dict.getDictCode())) {
-                predicateList.add(builder.equal(root.get("dictCode"), dict.getDictCode()));
-            }
-            return builder.and(predicateList.toArray(new Predicate[0]));
-        }, pageable);
+
+        QSysDict qSysDict = QSysDict.sysDict;
+
+        BooleanBuilder builder = new BooleanBuilder();
+        if(org.apache.commons.lang3.StringUtils.isNotBlank(dict.getDictName())) {
+            builder.and(qSysDict.dictName.like("%" + dict.getDictName() + "%"));
+        }
+        if(org.apache.commons.lang3.StringUtils.isNotBlank(dict.getDictCode())) {
+            builder.and(qSysDict.dictCode.eq(dict.getDictCode()));
+        }
+
+        QueryResults<SysDict> page = jpaQueryFactory.selectFrom(qSysDict).where(builder).offset(pageable.getOffset()).limit(pageable.getPageSize()).fetchResults();
+
         return new PageUtils(page);
     }
 
@@ -84,15 +94,16 @@ public class SysDictServiceImpl implements SysDictService {
             return result;
         }
         String sql = "SELECT %s AS 'text', %s AS 'value' FROM %s WHERE %s IN :keys".formatted(text, code, table,code);
+        return entityManager.createNativeQuery(sql, DictModel.class).setParameter("keys", keys).getResultList();
         // returning dtos
-        Session session = entityManager.unwrap(Session.class);
-        return session.createSQLQuery(sql).setParameter("keys", keys).setResultTransformer(Transformers.aliasToBean(DictModel.class)).getResultList();
+//        Session session = entityManager.unwrap(Session.class);
+//        return session.createSQLQuery(sql).setParameter("keys", keys).setResultTransformer(Transformers.aliasToBean(DictModel.class)).getResultList();
     }
 
     @Override
     public Map<String, List<DictModel>> queryManyDictByKeys(List<String> dictCodeList, List<String> keys) {
-        List<DictModelMany> list = dictRepository.queryManyDictByKeys(dictCodeList, keys);
-        Map<String, List<DictModel>> dictMap = new HashMap<>();
+        var list = dictRepository.queryManyDictByKeys(dictCodeList, keys);
+        Map<String, List<DictModel>> dictMap = new HashMap<>(100);
         for (DictModelMany dict : list) {
             List<DictModel> dictItemList = dictMap.computeIfAbsent(dict.getDictCode(), i -> new ArrayList<>());
             dictItemList.add(new DictModel(dict.getValue(), dict.getText()));

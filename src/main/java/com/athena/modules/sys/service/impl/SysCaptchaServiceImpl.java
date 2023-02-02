@@ -33,9 +33,9 @@ public class SysCaptchaServiceImpl implements SysCaptchaService {
             throw new RRException("uuid不能为空");
         }
         //生成文字验证码
-        String code = producer.createText();
+        var code = producer.createText();
 
-        SysCaptchaEntity captchaEntity = new SysCaptchaEntity();
+        var captchaEntity = new SysCaptchaEntity();
         captchaEntity.setUuid(uuid);
         captchaEntity.setCode(code);
         //5分钟后过期

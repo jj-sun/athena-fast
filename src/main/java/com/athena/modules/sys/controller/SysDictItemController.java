@@ -44,7 +44,7 @@ public class SysDictItemController {
     @GetMapping("/info/{id}")
     //@PreAuthorize("hasAuthority('sys:user:info')")
     public Result<SysDictItem> info(@PathVariable("id") String id){
-        SysDictItem dictItem = dictItemRepository.getById(id);
+        SysDictItem dictItem = dictItemRepository.getReferenceById(id);
         return Result.ok(dictItem);
     }
 

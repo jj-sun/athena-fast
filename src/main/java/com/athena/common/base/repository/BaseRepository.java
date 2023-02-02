@@ -5,6 +5,9 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.NoRepositoryBean;
 
+/**
+ * @author sunjie
+ */
 @NoRepositoryBean
 public interface BaseRepository<T,ID> extends JpaSpecificationExecutor<T>, QuerydslPredicateExecutor<T>, JpaRepository<T, ID> {
 

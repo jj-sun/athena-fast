@@ -8,6 +8,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * @author Mr.sun
+ */
 public class JpaAuditorAware implements AuditorAware<String> {
 
     @Override

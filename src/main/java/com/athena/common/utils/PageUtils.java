@@ -1,7 +1,9 @@
 package com.athena.common.utils;
 
+import com.querydsl.core.QueryResults;
 import org.springframework.data.domain.Page;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
@@ -11,6 +13,7 @@ import java.util.List;
  * @author Mr.sun
  */
 public class PageUtils implements Serializable {
+	@Serial
 	private static final long serialVersionUID = 1L;
 	/**
 	 * 总记录数
@@ -57,6 +60,17 @@ public class PageUtils implements Serializable {
 		this.pageSize = page.getSize();
 		this.currPage = page.getNumber() + 1;
 		this.totalPage = page.getTotalPages();
+	}
+
+	public PageUtils(QueryResults<?> queryResults) {
+		this.list = queryResults.getResults();
+		this.totalCount = (int)queryResults.getTotal();
+		this.pageSize = (int)queryResults.getLimit();
+		this.currPage = (int)queryResults.getOffset() + 1;
+		//计算总页数
+		long page = Math.floorDiv(queryResults.getTotal(),queryResults.getLimit());
+		long pageMod = Math.floorMod(queryResults.getTotal(),queryResults.getLimit());
+		this.totalPage = (int)(page + (pageMod > 0 ? 1L : 0L));
 	}
 
 	public int getTotalCount() {

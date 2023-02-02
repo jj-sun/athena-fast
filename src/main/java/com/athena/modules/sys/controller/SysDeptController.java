@@ -58,7 +58,7 @@ public class SysDeptController {
     @GetMapping("/info/{id}")
     //@PreAuthorize("hasAuthority('sys:user:info')")
     public Result<SysDept> info(@PathVariable("id") String id){
-        SysDept dept = deptRepository.getById(id);
+        SysDept dept = deptRepository.getReferenceById(id);
 
         return Result.ok(dept);
     }

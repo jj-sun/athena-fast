@@ -18,8 +18,6 @@ public interface SysUserRoleRepository extends BaseRepository<SysUserRole, Strin
      * 根据用户ID，获取角色ID列表
      */
 
-    //List<String> queryRoleIdList(String userId);
-
     @Query("SELECT roleId FROM SysUserRole WHERE userId = :userId")
     List<String> findRoleIdByUserId(@Param("userId") String userId);
 
