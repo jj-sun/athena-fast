@@ -1,5 +1,3 @@
-
-
 package com.athena.config;
 
 import com.google.code.kaptcha.impl.DefaultKaptcha;

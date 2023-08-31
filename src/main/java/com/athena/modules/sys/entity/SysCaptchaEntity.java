@@ -1,9 +1,9 @@
 package com.athena.modules.sys.entity;
 
+import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
 import java.util.Date;
 
 /**

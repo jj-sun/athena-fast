@@ -9,6 +9,7 @@ import com.athena.modules.sys.form.LoginUser;
 import com.athena.modules.sys.repository.SysLogRepository;
 import com.athena.modules.sys.service.SysLogService;
 import com.google.gson.Gson;
+import jakarta.servlet.http.HttpServletRequest;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -18,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.util.Date;
 

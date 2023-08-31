@@ -7,12 +7,12 @@ import com.athena.modules.monitor.domain.RedisInfo;
 import com.athena.modules.monitor.exception.RedisConnectException;
 import com.athena.modules.monitor.service.RedisService;
 import com.google.common.collect.Maps;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cglib.beans.BeanMap;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.*;
 
 /**

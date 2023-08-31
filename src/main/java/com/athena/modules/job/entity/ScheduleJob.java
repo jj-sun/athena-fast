@@ -3,10 +3,12 @@ package com.athena.modules.job.entity;
 import com.athena.common.base.po.BasePo;
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import lombok.EqualsAndHashCode;
+
 import java.io.Serial;
 import java.io.Serializable;
 
@@ -17,6 +19,7 @@ import java.io.Serializable;
  */
 @Data
 @Entity
+@EqualsAndHashCode(callSuper=false)
 @Table(name = "schedule_job")
 public class ScheduleJob extends BasePo implements Serializable {
 	@Serial

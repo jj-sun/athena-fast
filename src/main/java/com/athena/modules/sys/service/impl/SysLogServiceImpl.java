@@ -7,19 +7,13 @@ import com.athena.modules.sys.entity.QSysLog;
 import com.athena.modules.sys.entity.SysLog;
 import com.athena.modules.sys.repository.SysLogRepository;
 import com.athena.modules.sys.service.SysLogService;
-import com.google.common.collect.Lists;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import javax.persistence.criteria.Predicate;
-import java.util.List;
 
 
 /**

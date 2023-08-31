@@ -9,6 +9,8 @@ import com.athena.modules.job.repository.ScheduleJobRepository;
 import com.athena.modules.job.service.ScheduleJobService;
 import com.athena.modules.job.utils.ScheduleUtils;
 import com.google.common.collect.Lists;
+import jakarta.annotation.PostConstruct;
+import jakarta.persistence.criteria.Predicate;
 import org.apache.commons.lang.StringUtils;
 import org.quartz.CronTrigger;
 import org.quartz.Scheduler;
@@ -19,10 +21,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
-import javax.persistence.criteria.Predicate;
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 /**

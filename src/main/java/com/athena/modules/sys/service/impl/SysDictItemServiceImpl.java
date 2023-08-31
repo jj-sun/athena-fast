@@ -4,25 +4,17 @@ import com.athena.common.base.dto.PageDto;
 import com.athena.common.utils.PageUtils;
 import com.athena.common.utils.Query;
 import com.athena.modules.sys.entity.QSysDictItem;
-import com.athena.modules.sys.entity.QSysUser;
 import com.athena.modules.sys.entity.SysDictItem;
 import com.athena.modules.sys.repository.SysDictItemRepository;
 import com.athena.modules.sys.service.SysDictItemService;
-import com.google.common.collect.Lists;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.criteria.Predicate;
-import javax.persistence.metamodel.Bindable;
-import javax.persistence.metamodel.SingularAttribute;
-import java.util.List;
 import java.util.Objects;
 
 /**
